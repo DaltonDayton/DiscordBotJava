@@ -2,6 +2,7 @@ package com.biogenic;
 
 import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
+import com.biogenic.command.commands.HelpCommand;
 import com.biogenic.command.commands.PingCommand;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -22,6 +23,7 @@ public class CommandManager {
    */
   public CommandManager() {
     addCommand(new PingCommand());
+    addCommand(new HelpCommand(this));
   }
 
   /**
@@ -39,12 +41,19 @@ public class CommandManager {
   }
 
   /**
+   * @return A list of all commands.
+   */
+  public List<ICommand> getCommands() {
+    return commands;
+  }
+
+  /**
    * Searches for a command in the command list
    * @param search The command to search for
    * @return The command if it exists, otherwise null
    */
   @Nullable
-  private ICommand getCommand(String search) {
+  public ICommand getCommand(String search) {
     String searchLower = search.toLowerCase();
 
     for (ICommand cmd : this.commands) {
