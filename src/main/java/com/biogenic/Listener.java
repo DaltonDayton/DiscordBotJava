@@ -10,16 +10,27 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Listens for events
+ */
 public class Listener extends ListenerAdapter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Listener.class);
   private final CommandManager manager = new CommandManager();
 
+  /**
+   * Executes when the bot is ready
+   * @param event The Ready event
+   */
   @Override
   public void onReady(@Nonnull ReadyEvent event) {
     LOGGER.info("{} is ready", event.getJDA().getSelfUser().getAsTag());
   }
 
+  /**
+   * Executes when a message is sent to a text channel
+   * @param event The GuildMessageReceived event
+   */
   @Override
   public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
     User user = event.getAuthor();
@@ -44,4 +55,5 @@ public class Listener extends ListenerAdapter {
       manager.handle(event);
     }
   }
+
 }

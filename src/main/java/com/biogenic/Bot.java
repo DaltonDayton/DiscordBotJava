@@ -12,6 +12,9 @@ public class Bot {
 
   public static JDA jda;
 
+  /**
+   * Constructor
+   */
   private Bot() throws LoginException {
     jda = JDABuilder.create(EnumSet.allOf(GatewayIntent.class))
         .setToken(Config.get("TOKEN"))
@@ -21,6 +24,8 @@ public class Bot {
   }
 
   public static void main(String[] args) throws LoginException {
+    // Creates a new instance of the bot
     new Bot();
   }
+
 }

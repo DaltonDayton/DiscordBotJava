@@ -4,32 +4,45 @@ import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
 import com.biogenic.command.commands.PingCommand;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.interactions.commands.Command;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
+/**
+ * Manages a list of, and handles, commands
+ */
 public class CommandManager {
   private final List<ICommand> commands = new ArrayList<>();
 
+  /**
+   * Constructor
+   */
   public CommandManager() {
     addCommand(new PingCommand());
   }
 
+  /**
+   * Adds a new command to the command list after checking to see if it exists already
+   * @param cmd The command
+   */
   private void addCommand(ICommand cmd) {
     boolean nameFound = this.commands.stream().anyMatch((it) -> it.getName().equalsIgnoreCase(cmd.getName()));
 
     if (nameFound) {
-      throw new IllegalArgumentException("A command with this name is already present");
+      throw new IllegalArgumentException("The command: " + cmd.getName() + " already exists.");
     }
 
     commands.add(cmd);
   }
 
+  /**
+   * Searches for a command in the command list
+   * @param search The command to search for
+   * @return The command if it exists, otherwise null
+   */
   @Nullable
   private ICommand getCommand(String search) {
     String searchLower = search.toLowerCase();
@@ -43,7 +56,12 @@ public class CommandManager {
     return null;
   }
 
+  /**
+   * Handles the command entered into a text channel
+   * @param event GuildMessageReceived event
+   */
   void handle(GuildMessageReceivedEvent event) {
+    // Gets the message content, removes the prefix, and splits on whitespace
     String[] split = event.getMessage().getContentRaw()
         .replaceFirst("(?i)" + Pattern.quote(Config.get("PREFIX")), "")
         .split("\\s+");
@@ -58,6 +76,9 @@ public class CommandManager {
       CommandContext ctx = new CommandContext(event, args);
 
       cmd.handle(ctx);
+    } else {
+      // Functionality for telling the user a command doesn't exist
     }
   }
+
 }

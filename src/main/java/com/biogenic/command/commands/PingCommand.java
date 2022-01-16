@@ -4,6 +4,9 @@ import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
 import net.dv8tion.jda.api.JDA;
 
+/**
+ * Responds with the user's ping
+ */
 public class PingCommand implements ICommand {
   @Override
   public void handle(CommandContext ctx) {
@@ -15,8 +18,12 @@ public class PingCommand implements ICommand {
     );
   }
 
+  /**
+   * @return The name of the command
+   */
   @Override
   public String getName() {
     return "ping";
   }
+
 }
