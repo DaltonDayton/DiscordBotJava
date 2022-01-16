@@ -8,6 +8,9 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 
+/**
+ * Makes the bot join the voice channel that the author is in
+ */
 public class JoinCommand implements ICommand {
   @Override
   public void handle(CommandContext ctx) {
@@ -36,11 +39,17 @@ public class JoinCommand implements ICommand {
     channel.sendMessageFormat("Connecting to `\uD83D\uDD0A %s`", memberChannel.getName()).queue();
   }
 
+  /**
+   * @return The name of the command
+   */
   @Override
   public String getName() {
     return "join";
   }
 
+  /**
+   * @return Command Description
+   */
   @Override
   public String getHelp() {
     return "Makes the bot join your voice channel.";
