@@ -60,9 +60,13 @@ public class PlayerManager {
 
     this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
       // AudioLoadResultHandler is an interface
+
+      /**
+       * Append the audio track to the queue, or play if nothing is currently playing
+       * @param track The Audio Track
+       */
       @Override
       public void trackLoaded(AudioTrack track) {
-        // Append the audio track to the queue, or play if nothing is currently playing
         musicManager.scheduler.queue(track);
 
         channel.sendMessage("Adding to queue: `")
@@ -93,7 +97,7 @@ public class PlayerManager {
    * Only assign if we need it
    * @return The Instance of PlayerManager
    */
-  private static PlayerManager getInstance() {
+  public static PlayerManager getInstance() {
     if (INSTANCE == null) {
       INSTANCE = new PlayerManager();
     }

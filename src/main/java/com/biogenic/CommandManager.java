@@ -5,6 +5,7 @@ import com.biogenic.command.ICommand;
 import com.biogenic.command.commands.HelpCommand;
 import com.biogenic.command.commands.PingCommand;
 import com.biogenic.command.commands.music.JoinCommand;
+import com.biogenic.command.commands.music.PlayCommand;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import javax.annotation.Nullable;
@@ -29,6 +30,7 @@ public class CommandManager {
 
     // Music Commands
     addCommand(new JoinCommand());
+    addCommand(new PlayCommand());
   }
 
   /**
