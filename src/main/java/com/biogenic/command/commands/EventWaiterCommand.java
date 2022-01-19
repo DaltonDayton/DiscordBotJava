@@ -3,13 +3,15 @@ package com.biogenic.command.commands;
 import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import com.vdurmont.emoji.EmojiParser;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.util.concurrent.TimeUnit;
 
 public class EventWaiterCommand implements ICommand {
-  private static final String EMOTE = "1️⃣";
+  String emoteOne = ":one:";
+  private final String EMOTE = EmojiParser.parseToUnicode(emoteOne);
   private final EventWaiter waiter;
 
   public EventWaiterCommand(EventWaiter waiter) {
