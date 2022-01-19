@@ -35,6 +35,7 @@ public class CommandManager {
     addCommand(new NowPlayingCommand());
     addCommand(new QueueCommand());
     addCommand(new RepeatCommand());
+    addCommand(new LeaveCommand());
   }
 
   /**
