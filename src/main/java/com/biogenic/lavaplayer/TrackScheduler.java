@@ -12,8 +12,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Allows us to handle a queue of tracks
  */
 public class TrackScheduler extends AudioEventAdapter {
-  private final AudioPlayer player;
-  private final BlockingQueue<AudioTrack> queue;
+  public final AudioPlayer player;
+  public final BlockingQueue<AudioTrack> queue;
 
   /**
    * Constructor
