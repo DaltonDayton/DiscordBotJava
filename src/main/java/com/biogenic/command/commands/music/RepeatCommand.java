@@ -4,12 +4,11 @@ import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
 import com.biogenic.lavaplayer.GuildMusicManager;
 import com.biogenic.lavaplayer.PlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class SkipCommand implements ICommand {
+public class RepeatCommand implements ICommand {
   @Override
   public void handle(CommandContext ctx) {
     final TextChannel channel = ctx.getChannel();
@@ -36,24 +35,20 @@ public class SkipCommand implements ICommand {
     }
 
     final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(ctx.getGuild());
-    final AudioPlayer audioPlayer = musicManager.audioPlayer;
+    final boolean newRepeating = !musicManager.scheduler.repeating;
 
-    if (audioPlayer.getPlayingTrack() == null) {
-      channel.sendMessage("There is no track currently playing.").queue();
-      return;
-    }
+    musicManager.scheduler.repeating = newRepeating;
 
-    musicManager.scheduler.nextTrack();
-    channel.sendMessage("Skipped the current track.").queue();
+    channel.sendMessageFormat("The player has been set to **%s**", newRepeating ? "repeating" : "not repeating").queue();
   }
 
   @Override
   public String getName() {
-    return "skip";
+    return "repeat";
   }
 
   @Override
   public String getHelp() {
-    return "Skips the current track.";
+    return "Loops the current song.";
   }
 }
