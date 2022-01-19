@@ -2,9 +2,11 @@ package com.biogenic;
 
 import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
+import com.biogenic.command.commands.EventWaiterCommand;
 import com.biogenic.command.commands.HelpCommand;
 import com.biogenic.command.commands.PingCommand;
 import com.biogenic.command.commands.music.*;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import javax.annotation.Nullable;
@@ -22,10 +24,11 @@ public class CommandManager {
   /**
    * Constructor
    */
-  public CommandManager() {
+  public CommandManager(EventWaiter waiter) {
     // General
     addCommand(new PingCommand());
     addCommand(new HelpCommand(this));
+    addCommand(new EventWaiterCommand(waiter));
 
     // Music Commands
     addCommand(new JoinCommand());
