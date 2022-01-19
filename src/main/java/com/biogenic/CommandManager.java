@@ -4,10 +4,7 @@ import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
 import com.biogenic.command.commands.HelpCommand;
 import com.biogenic.command.commands.PingCommand;
-import com.biogenic.command.commands.music.JoinCommand;
-import com.biogenic.command.commands.music.PlayCommand;
-import com.biogenic.command.commands.music.SkipCommand;
-import com.biogenic.command.commands.music.StopCommand;
+import com.biogenic.command.commands.music.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import javax.annotation.Nullable;
@@ -35,6 +32,7 @@ public class CommandManager {
     addCommand(new PlayCommand());
     addCommand(new StopCommand());
     addCommand(new SkipCommand());
+    addCommand(new NowPlayingCommand());
   }
 
   /**
