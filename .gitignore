@@ -1,6 +1,7 @@
 .vscode/
 .idea/
-build/
 .gradle/
+build/
 out/
+target/
 .env
