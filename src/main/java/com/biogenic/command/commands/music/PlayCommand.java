@@ -1,6 +1,5 @@
 package com.biogenic.command.commands.music;
 
-import com.biogenic.CommandManager;
 import com.biogenic.Config;
 import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
@@ -17,76 +16,75 @@ import java.net.URISyntaxException;
  * Makes the bot play a song
  */
 public class PlayCommand implements ICommand {
-  private final EventWaiter waiter;
+    private final EventWaiter waiter;
 
-  public PlayCommand (EventWaiter waiter) {
-    this.waiter = waiter;
-  }
-
-  @Override
-  public void handle(CommandContext ctx) {
-    final TextChannel channel = ctx.getChannel();
-
-    if (ctx.getArgs().isEmpty()) {
-      channel.sendMessage("Usage: `" + Config.get("PREFIX") + "play <link>`");
-      return;
+    public PlayCommand(EventWaiter waiter) {
+        this.waiter = waiter;
     }
 
-    final Member self = ctx.getSelfMember();
-    final GuildVoiceState selfVoiceState = self.getVoiceState();
+    @Override
+    public void handle(CommandContext ctx) {
+        final TextChannel channel = ctx.getChannel();
 
-    if (!selfVoiceState.inVoiceChannel()) {
-      channel.sendMessage("I need to be in a voice channel for this to work.").queue();
-//      new JoinCommand().handle(ctx);
-      return;
+        if (ctx.getArgs().isEmpty()) {
+            channel.sendMessage("Usage: `" + Config.get("PREFIX") + "play <link>`");
+            return;
+        }
+
+        final Member self = ctx.getSelfMember();
+        final GuildVoiceState selfVoiceState = self.getVoiceState();
+
+        if (!selfVoiceState.inVoiceChannel()) {
+            channel.sendMessage("I need to be in a voice channel for this to work.").queue();
+            return;
+        }
+
+        final Member member = ctx.getMember();
+        final GuildVoiceState memberVoiceState = member.getVoiceState();
+
+        if (!memberVoiceState.inVoiceChannel()) {
+            channel.sendMessage("You need to be in a voice channel for this to work.").queue();
+            return;
+        }
+
+        if (!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())) {
+            channel.sendMessage("You need to be in the same voice channel as me for this to work.").queue();
+            return;
+        }
+
+        String link = String.join(" ", ctx.getArgs());
+
+        if (!isUrl(link)) {
+            link = "ytsearch:" + link;
+        }
+
+        PlayerManager.getInstance().loadAndPlay(channel, link, waiter);
     }
 
-    final Member member = ctx.getMember();
-    final GuildVoiceState memberVoiceState = member.getVoiceState();
-
-    if (!memberVoiceState.inVoiceChannel()) {
-      channel.sendMessage("You need to be in a voice channel for this to work.").queue();
-      return;
+    /**
+     * @return The name of the command
+     */
+    @Override
+    public String getName() {
+        return "play";
     }
 
-    if (!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())) {
-      channel.sendMessage("You need to be in the same voice channel as me for this to work.").queue();
-      return;
+    /**
+     * @return Command Description
+     */
+    @Override
+    public String getHelp() {
+        return "Plays a song\n" +
+                "Usage: `" + Config.get("PREFIX") + "play <link>`";
     }
 
-    String link = String.join(" ", ctx.getArgs());
-
-    if (!isUrl(link)) {
-      link = "ytsearch:" + link;
+    private boolean isUrl(String url) {
+        try {
+            new URI(url);
+            return true;
+        } catch (URISyntaxException e) {
+            return false;
+        }
     }
-
-    PlayerManager.getInstance().loadAndPlay(channel, link, waiter);
-  }
-
-  /**
-   * @return The name of the command
-   */
-  @Override
-  public String getName() {
-    return "play";
-  }
-
-  /**
-   * @return Command Description
-   */
-  @Override
-  public String getHelp() {
-    return "Plays a song\n" +
-        "Usage: `" + Config.get("PREFIX") + "play <link>`";
-  }
-
-  private boolean isUrl(String url) {
-    try {
-      new URI(url);
-      return true;
-    } catch (URISyntaxException e) {
-      return false;
-    }
-  }
 
 }

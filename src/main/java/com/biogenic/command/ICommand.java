@@ -3,14 +3,14 @@ package com.biogenic.command;
 import java.util.List;
 
 public interface ICommand {
-  void handle(CommandContext ctx);
+    void handle(CommandContext ctx);
 
-  String getName();
+    String getName();
 
-  String getHelp();
+    String getHelp();
 
-  default List<String> getAliases() {
-    return List.of();
-  }
+    default List<String> getAliases() {
+        return List.of();
+    }
 
 }

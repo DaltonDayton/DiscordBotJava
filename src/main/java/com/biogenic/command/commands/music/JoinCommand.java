@@ -12,47 +12,47 @@ import net.dv8tion.jda.api.managers.AudioManager;
  * Makes the bot join the voice channel that the author is in
  */
 public class JoinCommand implements ICommand {
-  @Override
-  public void handle(CommandContext ctx) {
-    final TextChannel channel = ctx.getChannel();
-    final Member self = ctx.getSelfMember();
-    GuildVoiceState selfVoiceState = self.getVoiceState();
+    @Override
+    public void handle(CommandContext ctx) {
+        final TextChannel channel = ctx.getChannel();
+        final Member self = ctx.getSelfMember();
+        GuildVoiceState selfVoiceState = self.getVoiceState();
 
-    assert selfVoiceState != null;
-    if (selfVoiceState.inVoiceChannel()) {
-      channel.sendMessage("I'm already in a voice channel.").queue();
-      return;
+        assert selfVoiceState != null;
+        if (selfVoiceState.inVoiceChannel()) {
+            channel.sendMessage("I'm already in a voice channel.").queue();
+            return;
+        }
+
+        final Member member = ctx.getMember();
+        final GuildVoiceState memberVoiceState = member.getVoiceState();
+
+        if (!memberVoiceState.inVoiceChannel()) {
+            channel.sendMessage("You need to be in a voice channel for this command to work.").queue();
+            return;
+        }
+
+        final AudioManager audioManager = ctx.getGuild().getAudioManager();
+        final VoiceChannel memberChannel = memberVoiceState.getChannel();
+
+        audioManager.openAudioConnection(memberChannel);
+        channel.sendMessageFormat("Connecting to `\uD83D\uDD0A %s`", memberChannel.getName()).queue();
     }
 
-    final Member member = ctx.getMember();
-    final GuildVoiceState memberVoiceState = member.getVoiceState();
-
-    if (!memberVoiceState.inVoiceChannel()) {
-      channel.sendMessage("You need to be in a voice channel for this command to work.").queue();
-      return;
+    /**
+     * @return The name of the command
+     */
+    @Override
+    public String getName() {
+        return "join";
     }
 
-    final AudioManager audioManager = ctx.getGuild().getAudioManager();
-    final VoiceChannel memberChannel = memberVoiceState.getChannel();
-
-    audioManager.openAudioConnection(memberChannel);
-    channel.sendMessageFormat("Connecting to `\uD83D\uDD0A %s`", memberChannel.getName()).queue();
-  }
-
-  /**
-   * @return The name of the command
-   */
-  @Override
-  public String getName() {
-    return "join";
-  }
-
-  /**
-   * @return Command Description
-   */
-  @Override
-  public String getHelp() {
-    return "Makes the bot join your voice channel.";
-  }
+    /**
+     * @return Command Description
+     */
+    @Override
+    public String getHelp() {
+        return "Makes the bot join your voice channel.";
+    }
 
 }

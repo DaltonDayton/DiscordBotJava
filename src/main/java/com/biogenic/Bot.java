@@ -11,24 +11,24 @@ import java.util.EnumSet;
 
 public class Bot {
 
-  public static JDA jda;
+    public static JDA jda;
 
-  /**
-   * Constructor
-   */
-  private Bot() throws LoginException {
-    EventWaiter waiter = new EventWaiter();
+    /**
+     * Constructor
+     */
+    private Bot() throws LoginException {
+        EventWaiter waiter = new EventWaiter();
 
-    jda = JDABuilder.create(EnumSet.allOf(GatewayIntent.class))
-        .setToken(Config.get("TOKEN"))
-        .addEventListeners(new Listener(waiter), waiter)
-        .setActivity(Activity.playing("Transcendence"))
-        .build();
-  }
+        jda = JDABuilder.create(EnumSet.allOf(GatewayIntent.class))
+                .setToken(Config.get("TOKEN"))
+                .addEventListeners(new Listener(waiter), waiter)
+                .setActivity(Activity.playing("Transcendence"))
+                .build();
+    }
 
-  public static void main(String[] args) throws LoginException {
-    // Creates a new instance of the bot
-    new Bot();
-  }
+    public static void main(String[] args) throws LoginException {
+        // Creates a new instance of the bot
+        new Bot();
+    }
 
 }
