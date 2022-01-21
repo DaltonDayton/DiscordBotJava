@@ -32,7 +32,7 @@ public class CommandManager {
 
     // Music Commands
     addCommand(new JoinCommand());
-    addCommand(new PlayCommand());
+    addCommand(new PlayCommand(waiter));
     addCommand(new StopCommand());
     addCommand(new SkipCommand());
     addCommand(new NowPlayingCommand());

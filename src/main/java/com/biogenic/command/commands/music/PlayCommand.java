@@ -5,6 +5,7 @@ import com.biogenic.Config;
 import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
 import com.biogenic.lavaplayer.PlayerManager;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -16,6 +17,12 @@ import java.net.URISyntaxException;
  * Makes the bot play a song
  */
 public class PlayCommand implements ICommand {
+  private final EventWaiter waiter;
+
+  public PlayCommand (EventWaiter waiter) {
+    this.waiter = waiter;
+  }
+
   @Override
   public void handle(CommandContext ctx) {
     final TextChannel channel = ctx.getChannel();
@@ -53,7 +60,7 @@ public class PlayCommand implements ICommand {
       link = "ytsearch:" + link;
     }
 
-    PlayerManager.getInstance().loadAndPlay(channel, link);
+    PlayerManager.getInstance().loadAndPlay(channel, link, waiter);
   }
 
   /**
