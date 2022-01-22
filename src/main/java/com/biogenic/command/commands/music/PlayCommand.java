@@ -8,6 +8,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,21 +34,24 @@ public class PlayCommand implements ICommand {
 
         final Member self = ctx.getSelfMember();
         final GuildVoiceState selfVoiceState = self.getVoiceState();
-
-        if (!selfVoiceState.inVoiceChannel()) {
-            channel.sendMessage("I need to be in a voice channel for this to work.").queue();
-            return;
-        }
+        VoiceChannel selfVoiceStateChannel = selfVoiceState.getChannel();
 
         final Member member = ctx.getMember();
         final GuildVoiceState memberVoiceState = member.getVoiceState();
+
+        if (!selfVoiceState.inVoiceChannel()) {
+            channel.sendMessage("I need to be in a voice channel for this to work.").queue();
+            JoinCommand joinCommand = new JoinCommand();
+            joinCommand.handle(ctx);
+            selfVoiceStateChannel = memberVoiceState.getChannel();
+        }
 
         if (!memberVoiceState.inVoiceChannel()) {
             channel.sendMessage("You need to be in a voice channel for this to work.").queue();
             return;
         }
 
-        if (!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())) {
+        if (!memberVoiceState.getChannel().equals(selfVoiceStateChannel)) {
             channel.sendMessage("You need to be in the same voice channel as me for this to work.").queue();
             return;
         }
