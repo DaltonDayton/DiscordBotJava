@@ -40,7 +40,6 @@ public class PlayCommand implements ICommand {
         final GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if (!selfVoiceState.inVoiceChannel()) {
-            channel.sendMessage("I need to be in a voice channel for this to work.").queue();
             JoinCommand joinCommand = new JoinCommand();
             joinCommand.handle(ctx);
             selfVoiceStateChannel = memberVoiceState.getChannel();
