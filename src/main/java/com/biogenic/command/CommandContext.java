@@ -1,10 +1,10 @@
 package com.biogenic.command;
 
+import java.util.List;
+
 import me.duncte123.botcommons.commands.ICommandContext;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-
-import java.util.List;
 
 /**
  * Gets the command (event) and it's arguments from the chat

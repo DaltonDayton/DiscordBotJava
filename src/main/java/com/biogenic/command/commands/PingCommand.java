@@ -2,6 +2,7 @@ package com.biogenic.command.commands;
 
 import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
+
 import net.dv8tion.jda.api.JDA;
 
 /**
@@ -13,7 +14,7 @@ public class PingCommand implements ICommand {
         JDA jda = ctx.getJDA();
 
         jda.getRestPing().queue(
-                (ping) -> ctx.getChannel()
+                ping -> ctx.getChannel()
                         .sendMessageFormat("Reset ping: %sms\nWS ping: %sms", ping, jda.getGatewayPing()).queue());
     }
 

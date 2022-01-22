@@ -1,19 +1,28 @@
 package com.biogenic;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
+
 import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
 import com.biogenic.command.commands.EventWaiterCommand;
 import com.biogenic.command.commands.HelpCommand;
 import com.biogenic.command.commands.PingCommand;
-import com.biogenic.command.commands.music.*;
+import com.biogenic.command.commands.music.JoinCommand;
+import com.biogenic.command.commands.music.LeaveCommand;
+import com.biogenic.command.commands.music.NowPlayingCommand;
+import com.biogenic.command.commands.music.PlayCommand;
+import com.biogenic.command.commands.music.QueueCommand;
+import com.biogenic.command.commands.music.RepeatCommand;
+import com.biogenic.command.commands.music.SkipCommand;
+import com.biogenic.command.commands.music.StopCommand;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 /**
  * Manages a list of, and handles, commands
@@ -48,7 +57,7 @@ public class CommandManager {
      * @param cmd The command
      */
     private void addCommand(ICommand cmd) {
-        boolean nameFound = this.commands.stream().anyMatch((it) -> it.getName().equalsIgnoreCase(cmd.getName()));
+        boolean nameFound = this.commands.stream().anyMatch(it -> it.getName().equalsIgnoreCase(cmd.getName()));
 
         if (nameFound) {
             throw new IllegalArgumentException("The command: " + cmd.getName() + " already exists.");

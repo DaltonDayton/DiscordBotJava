@@ -1,15 +1,17 @@
 package com.biogenic;
 
+import javax.annotation.Nonnull;
+
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import me.duncte123.botcommons.BotCommons;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
 
 /**
  * Listens for events

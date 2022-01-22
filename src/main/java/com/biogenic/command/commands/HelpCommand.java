@@ -1,12 +1,13 @@
 package com.biogenic.command.commands;
 
+import java.util.List;
+
 import com.biogenic.CommandManager;
 import com.biogenic.Config;
 import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
-import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.util.List;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 /**
  * Shows the description of a given command
@@ -29,7 +30,7 @@ public class HelpCommand implements ICommand {
             builder.append("List of commands\n");
 
             manager.getCommands().stream().map(ICommand::getName).forEach(
-                    (it) -> builder.append('`').append(Config.get("PREFIX")).append(it).append("`\n"));
+                    it -> builder.append('`').append(Config.get("PREFIX")).append(it).append("`\n"));
 
             channel.sendMessage(builder.toString()).queue();
             return;

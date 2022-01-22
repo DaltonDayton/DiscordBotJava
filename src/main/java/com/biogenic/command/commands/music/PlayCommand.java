@@ -1,17 +1,18 @@
 package com.biogenic.command.commands.music;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import com.biogenic.Config;
 import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
 import com.biogenic.lavaplayer.PlayerManager;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Makes the bot play a song

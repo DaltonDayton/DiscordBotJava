@@ -1,5 +1,12 @@
 package com.biogenic.lavaplayer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -9,22 +16,16 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.vdurmont.emoji.EmojiParser;
+
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Singleton - only has one instance
  */
 public class PlayerManager {
-    private static PlayerManager INSTANCE;
+    private static PlayerManager instance;
 
     private final Map<Long, GuildMusicManager> musicManagers; // Maps guild ids to guild music managers
     private final AudioPlayerManager audioPlayerManager;
@@ -48,7 +49,7 @@ public class PlayerManager {
      * @return guildMusicManager
      */
     public GuildMusicManager getMusicManager(Guild guild) {
-        return this.musicManagers.computeIfAbsent(guild.getIdLong(), (guildId) -> {
+        return this.musicManagers.computeIfAbsent(guild.getIdLong(), guildId -> {
             final GuildMusicManager guildMusicManager = new GuildMusicManager(this.audioPlayerManager);
 
             // Tell JDA what to use for sending the audio. In this case:
@@ -95,7 +96,7 @@ public class PlayerManager {
                     AtomicInteger selectedEmojiIndex = new AtomicInteger();
 
                     // Create EmojiList for song selection
-                    ArrayList<String> emojiList = new ArrayList<String>();
+                    ArrayList<String> emojiList = new ArrayList<>();
                     emojiList.add(EmojiParser.parseToUnicode(":one:"));
                     emojiList.add(EmojiParser.parseToUnicode(":two:"));
                     emojiList.add(EmojiParser.parseToUnicode(":three:"));
@@ -103,11 +104,12 @@ public class PlayerManager {
                     emojiList.add(EmojiParser.parseToUnicode(":five:"));
 
                     // Create Menu for song selection
-                    String topTrackList = "";
+                    StringBuilder topTrackList = new StringBuilder();
                     for (int i = 0; i < tracks.size() && i < 5; i++) {
-                        topTrackList += emojiList.get(i) + " - ";
-                        topTrackList += "`" + tracks.get(i).getInfo().title + "` by `" + tracks.get(i).getInfo().author
-                                + "`\n";
+                        topTrackList
+                                .append(emojiList.get(i) + " - ")
+                                .append("`" + tracks.get(i).getInfo().title)
+                                .append("` by `" + tracks.get(i).getInfo().author + "`\n");
                     }
 
                     // Send Menu to chat and get reaction
@@ -120,8 +122,8 @@ public class PlayerManager {
 
                                 waiter.waitForEvent(
                                         GuildMessageReactionAddEvent.class,
-                                        (e) -> e.getMessageIdLong() == message.getIdLong() && !e.getUser().isBot(),
-                                        (e) -> {
+                                        e -> e.getMessageIdLong() == message.getIdLong() && !e.getUser().isBot(),
+                                        e -> {
                                             String selectedEmoji = EmojiParser
                                                     .parseToAliases(e.getReactionEmote().getEmoji());
                                             switch (selectedEmoji) {
@@ -139,6 +141,8 @@ public class PlayerManager {
                                                     break;
                                                 case ":five:":
                                                     selectedEmojiIndex.set(4);
+                                                    break;
+                                                default:
                                                     break;
                                             }
 
@@ -184,11 +188,11 @@ public class PlayerManager {
      * @return The Instance of PlayerManager
      */
     public static PlayerManager getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new PlayerManager();
+        if (instance == null) {
+            instance = new PlayerManager();
         }
 
-        return INSTANCE;
+        return instance;
     }
 
 }

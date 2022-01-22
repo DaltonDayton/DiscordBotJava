@@ -1,10 +1,11 @@
 package com.biogenic.lavaplayer;
 
+import java.nio.ByteBuffer;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.MutableAudioFrame;
-import net.dv8tion.jda.api.audio.AudioSendHandler;
 
-import java.nio.ByteBuffer;
+import net.dv8tion.jda.api.audio.AudioSendHandler;
 
 /**
  * Sends the audio returned from Lavaplayer to Discord via JDA

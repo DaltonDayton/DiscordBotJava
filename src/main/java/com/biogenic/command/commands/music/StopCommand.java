@@ -4,6 +4,7 @@ import com.biogenic.command.CommandContext;
 import com.biogenic.command.ICommand;
 import com.biogenic.lavaplayer.GuildMusicManager;
 import com.biogenic.lavaplayer.PlayerManager;
+
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -36,7 +37,6 @@ public class StopCommand implements ICommand {
         final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(ctx.getGuild());
 
         musicManager.scheduler.player.stopTrack();
-        ;
         musicManager.scheduler.queue.clear();
 
         channel.sendMessage("The player has been stopped and the queue has been cleared.").queue();
