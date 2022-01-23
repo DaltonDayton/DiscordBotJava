@@ -6,9 +6,6 @@ import javax.security.auth.login.LoginException;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 
-import me.duncte123.botcommons.messaging.EmbedUtils;
-import me.duncte123.botcommons.web.WebUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -20,12 +17,6 @@ public class Bot {
      */
     private Bot() throws LoginException {
         EventWaiter waiter = new EventWaiter();
-
-        WebUtils.setUserAgent("I am a bot");
-        EmbedUtils.setEmbedBuilder(
-                () -> new EmbedBuilder()
-                        .setColor(0x3883d9)
-                        .setFooter("Transcendence"));
 
         JDABuilder.createDefault(
                 Config.get("TOKEN"),

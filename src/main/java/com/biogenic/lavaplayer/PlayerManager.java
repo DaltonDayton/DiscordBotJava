@@ -29,6 +29,7 @@ public class PlayerManager {
 
     private final Map<Long, GuildMusicManager> musicManagers; // Maps guild ids to guild music managers
     private final AudioPlayerManager audioPlayerManager;
+    private ArrayList<String> emojiList = new ArrayList<>();
 
     /**
      * Constructor
@@ -81,86 +82,30 @@ public class PlayerManager {
             public void trackLoaded(AudioTrack track) {
                 musicManager.scheduler.queue(track);
 
-                channel.sendMessage("Adding to queue: `")
-                        .append(track.getInfo().title)
-                        .append("` by `")
-                        .append(track.getInfo().author)
-                        .queue();
+                addedToQueueMessage(channel, track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 final List<AudioTrack> tracks = playlist.getTracks();
 
+                // Create EmojiList for song selection
+                emojiList.add(EmojiParser.parseToUnicode(":one:"));
+                emojiList.add(EmojiParser.parseToUnicode(":two:"));
+                emojiList.add(EmojiParser.parseToUnicode(":three:"));
+                emojiList.add(EmojiParser.parseToUnicode(":four:"));
+                emojiList.add(EmojiParser.parseToUnicode(":five:"));
+
                 if (playlist.getName().contains("Search results")) {
-                    AtomicInteger selectedEmojiIndex = new AtomicInteger();
-
-                    // Create EmojiList for song selection
-                    ArrayList<String> emojiList = new ArrayList<>();
-                    emojiList.add(EmojiParser.parseToUnicode(":one:"));
-                    emojiList.add(EmojiParser.parseToUnicode(":two:"));
-                    emojiList.add(EmojiParser.parseToUnicode(":three:"));
-                    emojiList.add(EmojiParser.parseToUnicode(":four:"));
-                    emojiList.add(EmojiParser.parseToUnicode(":five:"));
-
-                    // Create Menu for song selection
-                    StringBuilder topTrackList = new StringBuilder();
-                    for (int i = 0; i < tracks.size() && i < 5; i++) {
-                        topTrackList
-                                .append(emojiList.get(i) + " - ")
-                                .append("`" + tracks.get(i).getInfo().title)
-                                .append("` by `" + tracks.get(i).getInfo().author + "`\n");
-                    }
-
-                    // Send Menu to chat and get reaction
-                    channel.sendMessage("Pick one:\n")
-                            .append(topTrackList)
-                            .queue((message -> {
-                                for (String emoji : emojiList) {
-                                    message.addReaction(emoji).queue();
-                                }
-
-                                waiter.waitForEvent(
-                                        GuildMessageReactionAddEvent.class,
-                                        e -> e.getMessageIdLong() == message.getIdLong() && !e.getUser().isBot(),
-                                        e -> {
-                                            String selectedEmoji = EmojiParser
-                                                    .parseToAliases(e.getReactionEmote().getEmoji());
-                                            switch (selectedEmoji) {
-                                                case ":one:":
-                                                    selectedEmojiIndex.set(0);
-                                                    break;
-                                                case ":two:":
-                                                    selectedEmojiIndex.set(1);
-                                                    break;
-                                                case ":three:":
-                                                    selectedEmojiIndex.set(2);
-                                                    break;
-                                                case ":four:":
-                                                    selectedEmojiIndex.set(3);
-                                                    break;
-                                                case ":five:":
-                                                    selectedEmojiIndex.set(4);
-                                                    break;
-                                                default:
-                                                    break;
-                                            }
-
-                                            channel.sendMessageFormat("Adding %s to the queue.",
-                                                    tracks.get(selectedEmojiIndex.get()).getInfo().title).queue();
-
-                                            // Add single song from menu
-                                            musicManager.scheduler.queue(tracks.get(selectedEmojiIndex.get()));
-                                        },
-                                        20L, TimeUnit.SECONDS,
-                                        () -> channel.sendMessage("Timed out.").queue());
-                            })); // end sendMessage queue
+                    // Handles ytsearch results
+                    sendMessageGetReaction(channel, tracks, waiter, musicManager);
                 } else {
                     // Add full playlist of songs
                     channel.sendMessage("Adding to queue: `")
                             .append(String.valueOf(tracks.size()))
                             .append("` tracks from playlist `")
                             .append(playlist.getName())
+                            .append("`")
                             .queue();
 
                     for (final AudioTrack track : tracks) {
@@ -179,7 +124,128 @@ public class PlayerManager {
             public void loadFailed(FriendlyException exception) {
                 channel.sendMessage("loadFailed").queue();
             }
+
         });
+
+    }
+
+    /**
+     * Sends a menu with the top five tracks to the text channel, gets the reaction,
+     * and adds the selected song.
+     * 
+     * @param channel      The text channel
+     * @param tracks       The list of tracks
+     * @param waiter       The EventWaiter
+     * @param musicManager The Music Manager
+     */
+    private void sendMessageGetReaction(TextChannel channel, List<AudioTrack> tracks, EventWaiter waiter,
+            GuildMusicManager musicManager) {
+        AtomicInteger selectedEmojiIndex = new AtomicInteger();
+
+        // Send Menu to chat and get reaction
+        channel.sendMessage(topTrackList(tracks))
+                .queue((message -> {
+                    for (String emoji : emojiList) {
+                        message.addReaction(emoji).queue();
+                    }
+
+                    waiter.waitForEvent(
+                            GuildMessageReactionAddEvent.class,
+                            e -> e.getMessageIdLong() == message.getIdLong() && !e.getUser().isBot(),
+                            e -> {
+                                String selectedEmoji = EmojiParser
+                                        .parseToAliases(e.getReactionEmote().getEmoji());
+                                switch (selectedEmoji) {
+                                    case ":one:":
+                                        selectedEmojiIndex.set(0);
+                                        break;
+                                    case ":two:":
+                                        selectedEmojiIndex.set(1);
+                                        break;
+                                    case ":three:":
+                                        selectedEmojiIndex.set(2);
+                                        break;
+                                    case ":four:":
+                                        selectedEmojiIndex.set(3);
+                                        break;
+                                    case ":five:":
+                                        selectedEmojiIndex.set(4);
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                                AudioTrack selectedSong = tracks.get(selectedEmojiIndex.get());
+                                addedToQueueMessage(channel, selectedSong);
+
+                                // Add single song from menu
+                                musicManager.scheduler.queue(tracks.get(selectedEmojiIndex.get()));
+                            },
+                            20L, TimeUnit.SECONDS,
+                            () -> channel.sendMessage("Timed out.").queue());
+                })); // end sendMessage queue
+    }
+
+    /**
+     * Creates the menu for song selection
+     * 
+     * @param tracks A list of audio tracks
+     * @return The top five tracks in a menu
+     */
+    private String topTrackList(List<AudioTrack> tracks) {
+        StringBuilder topTrackListMenu = new StringBuilder();
+        for (int i = 0; i < tracks.size() && i < 5; i++) {
+            String trackDuration;
+            long millis = tracks.get(i).getDuration();
+            long hours = TimeUnit.MILLISECONDS.toHours(millis);
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+            long seconds = TimeUnit.MILLISECONDS.toSeconds(millis)
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
+
+            // Remove extra minutes
+            if (minutes >= 60) {
+                minutes -= minutes / 60 * 60;
+            }
+            // Remove extra seconds
+            if (seconds >= 60) {
+                seconds -= seconds / 60 * 60;
+            }
+
+            // Change formatting based on duration
+            if (hours >= 1) {
+                trackDuration = String.format("%02d:%02d:%02d",
+                        hours,
+                        minutes,
+                        seconds);
+            } else {
+                trackDuration = String.format("%02d:%02d",
+                        minutes,
+                        seconds);
+            }
+
+            topTrackListMenu
+                    .append("> " + emojiList.get(i) + " - ")
+                    .append("__" + tracks.get(i).getInfo().title)
+                    .append("__ - `" + trackDuration)
+                    .append("` by **" + tracks.get(i).getInfo().author + "**\n");
+        }
+
+        return topTrackListMenu.toString();
+    }
+
+    /**
+     * Sends an 'Adding to queue: ' message to the TextChannel
+     * 
+     * @param channel The TextChannel the message is sent to
+     * @param track   The track being added
+     */
+    private void addedToQueueMessage(TextChannel channel, AudioTrack track) {
+        channel.sendMessage("Adding to queue: `")
+                .append(track.getInfo().title)
+                .append("` by `")
+                .append(track.getInfo().author)
+                .append("`")
+                .queue();
     }
 
     /**
