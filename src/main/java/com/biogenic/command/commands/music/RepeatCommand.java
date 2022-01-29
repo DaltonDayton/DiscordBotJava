@@ -35,9 +35,9 @@ public class RepeatCommand implements ICommand {
         }
 
         final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(ctx.getGuild());
-        final boolean newRepeating = !musicManager.scheduler.repeating;
+        final boolean newRepeating = !musicManager.scheduler.isRepeating();
 
-        musicManager.scheduler.repeating = newRepeating;
+        musicManager.scheduler.setRepeating(newRepeating);
 
         channel.sendMessageFormat("The player has been set to **%s**", newRepeating ? "repeating" : "not repeating")
                 .queue();

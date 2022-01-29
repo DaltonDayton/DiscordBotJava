@@ -87,7 +87,7 @@ public class Listener extends ListenerAdapter {
         // If no humans in voice channel, disconnect
         final Guild guild = event.getGuild();
         final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(guild);
-        musicManager.scheduler.repeating = false;
+        musicManager.scheduler.setRepeating(false);
         musicManager.scheduler.queue.clear();
         musicManager.audioPlayer.stopTrack();
         final AudioManager audioManager = event.getGuild().getAudioManager();
