@@ -80,7 +80,7 @@ public class PlayerManager {
              */
             @Override
             public void trackLoaded(AudioTrack track) {
-                musicManager.scheduler.queue(track);
+                musicManager.scheduler.queueTrack(track);
 
                 addedToQueueMessage(channel, track);
             }
@@ -109,7 +109,7 @@ public class PlayerManager {
                             .queue();
 
                     for (final AudioTrack track : tracks) {
-                        musicManager.scheduler.queue(track);
+                        musicManager.scheduler.queueTrack(track);
                     }
                 }
 
@@ -179,7 +179,7 @@ public class PlayerManager {
                                 addedToQueueMessage(channel, selectedSong);
 
                                 // Add single song from menu
-                                musicManager.scheduler.queue(tracks.get(selectedEmojiIndex.get()));
+                                musicManager.scheduler.queueTrack(tracks.get(selectedEmojiIndex.get()));
                             },
                             20L, TimeUnit.SECONDS,
                             () -> channel.sendMessage("Timed out.").queue());
